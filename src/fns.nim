@@ -8,6 +8,7 @@ import sequtils
 import terminal
 import strformat
 from os import sleep
+import system
 
 {.experimental: "parallel".}
 
@@ -54,7 +55,7 @@ proc proc_line(f : Stream, wf : Stream, col_count : int) =
       else:
         return
     except:
-      echo "errorr process line:", line
+      echo "errorr process line:", line, " message: ", getCurrentExceptionMsg(), " stack trace: ", getStackTrace()
 
 proc trans_file_format(fromFile : string, toFile : string, skipHeaderLine : bool) : void =
   var
@@ -123,7 +124,7 @@ when isMainModule:
     p = newParser("fns"):
       help("fast number search")
       option("-f", "--from-file", help="which file used to convert binary format datafile.")
-      flag("-s", "--skip_header_line", help="skip file header line.")
+      flag("-s", "--skip-header-line", help="skip file header line.")
       flag("-b", "--build", help="build binary format file")
       option("-c", "--column", help="which column to find.", default="0")
       arg("datafile")
