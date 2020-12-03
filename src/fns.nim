@@ -1,14 +1,13 @@
 import argparse
 import streams
-import nre
 import strutils
 import threadpool, locks
 import cpuinfo
-import sequtils
 import terminal
 import strformat
 from os import sleep
 import system
+import nre
 
 {.experimental: "parallel".}
 
@@ -37,8 +36,7 @@ proc proc_line(f : Stream, wf : Stream, col_count : int) =
   while true:
     try:
       if f.readLine(line):
-        let r = line.split(re"[\s-+=]+").map(
-          proc(x: string) : int = x.strip().parseint())
+        var r = line.findAll(re"\d+")
         if len(r) < col_count:
           echo line, " column is ", len(r), " less than col ", col_count
         elif len(r) > col_count:
@@ -46,11 +44,11 @@ proc proc_line(f : Stream, wf : Stream, col_count : int) =
           withLock write_lock:
             let start = len(r) - col_count
             for v in r[start .. ^1]:
-              wf.write(uint64(v))
+              wf.write(uint64(v.parseInt))
         else:
           withLock write_lock:
             for v in r:
-              wf.write(uint64(v))
+              wf.write(uint64(v.parseInt))
         total_count += 1
       else:
         return
