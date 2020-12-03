@@ -94,8 +94,7 @@ proc search_number(file : string, column : int, n : int) : void =
     start_pos = f.getPosition()
     value_byte_len = 8
     row_byte_len = col_count * value_byte_len
-  echo "total column ", col_count
-  echo "search for:", n
+    echo "total column ", col_count,  "search column ", column, " for value:", n
   var row = 0
   try:
     while true:
